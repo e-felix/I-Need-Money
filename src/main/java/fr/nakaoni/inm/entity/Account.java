@@ -1,35 +1,41 @@
 package fr.nakaoni.inm.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "bank_account")
-public class Account {
+public class Account implements Resource {
     @Id
     @GeneratedValue
     private Long id;
 
     private String name;
 
-    private Type type;
+    private AccountType type;
 
     private Long balance;
 
     @ManyToOne(targetEntity = Bank.class)
     private Bank bank;
 
+    @OneToMany(targetEntity = Category.class)
+    private Set<Category> categories;
+
     public Account() {
+        this.type = AccountType.CHECKING;
+        this.categories = new HashSet<>();
     }
 
-    public Account(String name, Type type, Long balance, Bank bank) {
+    public Account(String name, AccountType type, Long balance, Bank bank, Set<Category> categories) {
         this.name = name;
         this.type = type;
         this.balance = balance;
         this.bank = bank;
+        this.categories = categories;
     }
 
     enum Type {
@@ -49,11 +55,11 @@ public class Account {
         this.name = name;
     }
 
-    public Type getType() {
+    public AccountType getType() {
         return type;
     }
 
-    public void setType(Type type) {
+    public void setType(AccountType type) {
         this.type = type;
     }
 
@@ -73,49 +79,28 @@ public class Account {
         this.bank = bank;
     }
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
+    public Set<Category> getCategories() {
+        return this.categories;
+    }
 
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
+    public void addCategory(Category category) {
+        this.categories.add(category);
+    }
 
-        return result;
+    public void removeCategory(Category category) {
+        this.categories.remove(category);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Account account)) return false;
+        return Objects.equals(id, account.id) && Objects.equals(name, account.name) && type == account.type && Objects.equals(balance, account.balance) && Objects.equals(bank, account.bank);
+    }
 
-        if (obj == null) {
-            return false;
-        }
-
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-
-        Account other = (Account) obj;
-        if (id == null) {
-            if (other.id != null) {
-                return false;
-            }
-        } else if (!id.equals(other.id)) {
-            return false;
-        }
-
-        if (name == null) {
-            if (other.name != null) {
-                return false;
-            }
-        } else if (!name.equals(other.name)) {
-            return false;
-        }
-
-        return true;
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, type, balance, bank);
     }
 
     @Override

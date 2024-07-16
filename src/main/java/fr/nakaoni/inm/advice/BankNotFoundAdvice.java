@@ -1,5 +1,6 @@
 package fr.nakaoni.inm.advice;
 
+import fr.nakaoni.inm.exception.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -10,9 +11,9 @@ import fr.nakaoni.inm.exception.BankNotFoundException;
 @RestControllerAdvice
 public class BankNotFoundAdvice {
 
-    @ExceptionHandler(BankNotFoundException.class)
+    @ExceptionHandler(EntityNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public String bankNotFoundHandler(BankNotFoundException e)
+    public String bankNotFoundHandler(EntityNotFoundException e)
     {
         return e.getMessage();
     }

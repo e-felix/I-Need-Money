@@ -6,15 +6,17 @@ import java.util.List;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 
 @Entity
-public class Bank {
+public class Bank implements Resource {
     @Id
     @GeneratedValue
     private Long id;
 
     private String name;
 
+    @OneToMany(targetEntity = Account.class)
     private List<Account> accounts;
 
     public Bank() {

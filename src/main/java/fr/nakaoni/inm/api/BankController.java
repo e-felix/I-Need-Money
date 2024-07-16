@@ -1,5 +1,6 @@
 package fr.nakaoni.inm.api;
 
+import fr.nakaoni.inm.exception.EntityNotFoundException;
 import org.springframework.web.bind.annotation.RestController;
 
 import fr.nakaoni.inm.assembler.BankModelAssembler;
@@ -47,7 +48,7 @@ public class BankController {
     public EntityModel<Bank> get(@PathVariable Long id) {
         Bank bank = this.bankRepository
                 .findById(id)
-                .orElseThrow(() -> new BankNotFoundException(id));
+                .orElseThrow(() -> new EntityNotFoundException(id, Bank.class.getSimpleName()));
 
         return bankModelAssembler.toModel(bank);
     }
